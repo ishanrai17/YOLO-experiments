@@ -1,9 +1,10 @@
 import urllib.request, zipfile
+from pathlib import Path
 
 from .abstract_extractor import AbstractExtractor
 
 class ExtractorV1(AbstractExtractor):
-    def __init__(self, url: str, folder_path: str):
+    def __init__(self, url: str, folder_path: Path):
         self.url = url
         self.folder_path = folder_path
 
@@ -16,6 +17,6 @@ class ExtractorV1(AbstractExtractor):
 
         if zipfile.is_zipfile(archive_path):
             with zipfile.ZipFile(archive_path) as z:
-                z.extractall(self.folder_path)
+                z.extractall(self.folder_path / "raw")
 
         return str(self.folder_path)
