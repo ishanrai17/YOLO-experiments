@@ -3,9 +3,9 @@ import urllib.request, zipfile
 from .abstract_extractor import AbstractExtractor, DATA_DIR
 
 class ExtractorV1(AbstractExtractor):
-    def __init__(self, url: str, identifier: str):
+    def __init__(self, url: str, folder_path: str):
         self.url = url
-        self.folder_path = DATA_DIR / identifier
+        self.folder_path = folder_path
 
     def extract(self):
         self.folder_path.mkdir(parents=True, exist_ok=True)

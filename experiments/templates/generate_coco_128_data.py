@@ -5,7 +5,7 @@ from src.data.coco.extract.extractor_v1 import ExtractorV1
 
 @hydra.main(version_base=None, config_path="../config/data", config_name="coco128")
 def run(cfg: DictConfig) -> None:
-    extractor = ExtractorV1(cfg.url, cfg.identifier)
+    extractor = ExtractorV1(cfg.url, cfg.folder_path)
     folder_path = extractor.extract()
     print(f"Data extracted to: {folder_path}")
 
