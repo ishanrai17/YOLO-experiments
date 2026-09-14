@@ -1,4 +1,3 @@
-from pathlib import Path
 import urllib.request, zipfile
 
 from .abstract_extractor import AbstractExtractor, DATA_DIR
