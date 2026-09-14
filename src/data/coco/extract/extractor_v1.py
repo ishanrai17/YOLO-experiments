@@ -1,6 +1,6 @@
 import urllib.request, zipfile
 
-from .abstract_extractor import AbstractExtractor, DATA_DIR
+from .abstract_extractor import AbstractExtractor
 
 class ExtractorV1(AbstractExtractor):
     def __init__(self, url: str, folder_path: str):
