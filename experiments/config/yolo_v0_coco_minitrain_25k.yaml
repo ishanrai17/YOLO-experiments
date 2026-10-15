@@ -1,0 +1,9 @@
+data_root: data/coco_minitrain_25k/raw/coco_minitrain_25k/
+device: cpu  # cuda | mps | cpu
+
+batch_size: 16
+epochs: 100
+lr: 1e-4
+num_workers: 4
+
+ckpt_dir: checkpoints/yolov1
