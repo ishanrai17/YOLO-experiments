@@ -1,2 +1,7 @@
 hydra-core
 wget
+numpy<2
+torch
+torchvision
+pillow
+tqdm
