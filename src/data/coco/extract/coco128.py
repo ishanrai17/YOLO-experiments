@@ -2,7 +2,7 @@ import hydra
 from omegaconf import DictConfig
 from pathlib import Path
 
-from src.data.coco.extract.utils import download_and_unzip
+from src.data.coco.extract.helpers.utils import download_and_unzip
 
 class Coco128:
     def __init__(self, cfg: DictConfig):
