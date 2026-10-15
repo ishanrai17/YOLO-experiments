@@ -14,7 +14,6 @@ class Coco128:
             folder_path=Path(self.cfg.folder_path)
         )
 
-
 @hydra.main(version_base=None, config_path="config", config_name="coco128")
 def main(cfg: DictConfig) -> None:
     folder_path = Coco128(cfg).download()
