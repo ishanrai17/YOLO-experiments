@@ -48,7 +48,7 @@ def train(cfg: DictConfig) -> None:
         torch.save(model.state_dict(), ckpt_dir / "last.pt")
 
 
-@hydra.main(version_base=None, config_path="config", config_name="yolo_v0_coco_minitrain_25k")
+@hydra.main(version_base=None, config_path="../config", config_name="yolo_v0_coco_minitrain_25k")
 def main(cfg: DictConfig) -> None:
     train(cfg)
 
