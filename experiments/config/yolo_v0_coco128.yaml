@@ -6,5 +6,5 @@ epochs: 5
 lr: 1e-4
 num_workers: 4
 
-ckpt_dir: checkpoints/yolov1_coco128
+ckpt_dir: checkpoints/yolov0/coco128
 resume: false  # true = continue from the latest ckpt_dir/epoch_*.pt
