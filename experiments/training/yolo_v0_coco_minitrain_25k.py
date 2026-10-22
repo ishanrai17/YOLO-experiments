@@ -21,6 +21,32 @@ def yolo_loss(pred: torch.Tensor, target: torch.Tensor, lambda_coord: float = 5.
     return loss.sum() / pred.shape[0]
 
 
+def save_checkpoint(ckpt_dir: Path, epoch: int, model: torch.nn.Module, optimizer: torch.optim.Optimizer) -> None:
+    """Save everything needed to resume training to ckpt_dir/epoch_{epoch + 1}.pt."""
+    tmp = ckpt_dir / f"epoch_{epoch + 1}.tmp"
+    torch.save({
+        "epoch": epoch,
+        "model": model.state_dict(),
+        "optimizer": optimizer.state_dict(),
+        "rng": torch.get_rng_state(),  # keeps the shuffle order consistent after resuming
+    }, tmp)
+    tmp.replace(ckpt_dir / f"epoch_{epoch + 1}.pt")  # rename only once fully written, so resume never loads a partial file
+
+
+def resume(path: Path, model: torch.nn.Module, optimizer: torch.optim.Optimizer) -> int:
+    """Load an epoch checkpoint into model and optimizer. Returns the epoch to start from."""
+    ckpt = torch.load(path, map_location="cpu")
+    model.load_state_dict(ckpt["model"])
+    optimizer.load_state_dict(ckpt["optimizer"])
+    torch.set_rng_state(ckpt["rng"])
+    print(f"Resumed from {path}, starting at epoch {ckpt['epoch'] + 2}")
+    return ckpt["epoch"] + 1
+
+def load_checkpoints(ckpt_dir: Path) -> list[Path]:
+    """Return a list of checkpoint paths in the directory, sorted by epoch number."""
+    return sorted(ckpt_dir.glob("epoch_*.pt"), key=lambda p: int(p.stem.split("_")[1]))
+
+
 def train(cfg: DictConfig) -> None:
     device = torch.device(cfg.device)
     loader = get_dataloader(cfg.data_root, "train", cfg.batch_size, cfg.num_workers)
@@ -29,8 +55,13 @@ def train(cfg: DictConfig) -> None:
 
     ckpt_dir = Path(cfg.ckpt_dir)
     ckpt_dir.mkdir(parents=True, exist_ok=True)
+    start_epoch = 0
 
-    for epoch in range(cfg.epochs):
+    if cfg.resume:
+        ckpts = load_checkpoints(ckpt_dir)
+        start_epoch = resume(ckpts[-1], model, optimizer, ckpt_dir) if ckpts else 0
+
+    for epoch in range(start_epoch, cfg.epochs):
         model.train()
         total = 0.0
         pbar = tqdm(loader, desc=f"epoch {epoch + 1}/{cfg.epochs}")
@@ -45,7 +76,7 @@ def train(cfg: DictConfig) -> None:
             total += loss.item()
             pbar.set_postfix(loss=f"{total / step:.4f}")
 
-        torch.save(model.state_dict(), ckpt_dir / "last.pt")
+        save_checkpoint(ckpt_dir, epoch, model, optimizer)
 
 
 @hydra.main(version_base=None, config_path="../config", config_name="yolo_v0_coco_minitrain_25k")

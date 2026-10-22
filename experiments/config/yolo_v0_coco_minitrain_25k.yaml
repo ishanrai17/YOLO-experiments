@@ -7,3 +7,4 @@ lr: 1e-4
 num_workers: 4
 
 ckpt_dir: checkpoints/yolov1
+resume: false  # true = continue from the latest ckpt_dir/epoch_*.pt
