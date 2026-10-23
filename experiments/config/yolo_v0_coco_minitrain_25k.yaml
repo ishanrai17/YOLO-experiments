@@ -1,9 +1,11 @@
 data_root: data/coco_minitrain_25k/raw/coco_minitrain_25k/
 device: cpu  # cuda | mps | cpu
 
-batch_size: 16
-epochs: 100
+batch_size: 64
+epochs: 135
 lr: 1e-4
+momentum: 0.9  # AdamW beta1
+weight_decay: 0.0005
 num_workers: 4
 
 ckpt_dir: checkpoints/yolov0/coco_minitrain_25k

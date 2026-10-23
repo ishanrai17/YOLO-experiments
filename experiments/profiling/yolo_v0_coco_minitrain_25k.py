@@ -6,7 +6,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig
 from torch.profiler import ProfilerActivity, profile, record_function, schedule
 
-from experiments.training.yolo_v0_coco_minitrain_25k import yolo_loss
+from experiments.training.yolo_v0_coco_minitrain_25k import build_optimizer, yolo_loss
 from src.dataloader.coco.coco_minitrain_25k import get_dataloader
 from src.models.yolov1 import YoloV1
 
@@ -18,7 +18,7 @@ def profile_training(cfg: DictConfig) -> None:
     device = torch.device(cfg.device)
     loader = get_dataloader(cfg.data_root, "train", cfg.batch_size, cfg.num_workers)
     model = YoloV1().to(device).train()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr)
+    optimizer = build_optimizer(cfg, model)
 
     activities = [ProfilerActivity.CPU] + ([ProfilerActivity.CUDA] if device.type == "cuda" else [])
     batches = iter(loader)

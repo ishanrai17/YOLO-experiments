@@ -47,11 +47,21 @@ def load_checkpoints(ckpt_dir: Path) -> list[Path]:
     return sorted(ckpt_dir.glob("epoch_*.pt"), key=lambda p: int(p.stem.split("_")[1]))
 
 
+def build_optimizer(cfg: DictConfig, model: torch.nn.Module) -> torch.optim.Optimizer:
+    """AdamW, with momentum as beta1. Configs without momentum / weight_decay get AdamW's defaults."""
+    return torch.optim.AdamW(
+        model.parameters(),
+        lr=cfg.lr,
+        betas=(cfg.get("momentum", 0.9), 0.999),
+        weight_decay=cfg.get("weight_decay", 0.01),
+    )
+
+
 def train(cfg: DictConfig) -> None:
     device = torch.device(cfg.device)
     loader = get_dataloader(cfg.data_root, "train", cfg.batch_size, cfg.num_workers)
     model = YoloV1().to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr)
+    optimizer = build_optimizer(cfg, model)
 
     ckpt_dir = Path(cfg.ckpt_dir)
     ckpt_dir.mkdir(parents=True, exist_ok=True)
