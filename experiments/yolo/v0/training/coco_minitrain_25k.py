@@ -90,7 +90,7 @@ def train(cfg: DictConfig) -> None:
         save_checkpoint(ckpt_dir, epoch, model, optimizer)
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="yolo_v0_coco_minitrain_25k")
+@hydra.main(version_base=None, config_path="../config", config_name="coco_minitrain_25k")
 def main(cfg: DictConfig) -> None:
     train(cfg)
 

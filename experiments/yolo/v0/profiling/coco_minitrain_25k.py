@@ -6,7 +6,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig
 from torch.profiler import ProfilerActivity, profile, record_function, schedule
 
-from experiments.training.yolo_v0_coco_minitrain_25k import build_optimizer, yolo_loss
+from experiments.yolo.v0.training.coco_minitrain_25k import build_optimizer, yolo_loss
 from src.dataloader.coco.coco_minitrain_25k import get_dataloader
 from src.models.yolov1 import YoloV1
 
@@ -46,7 +46,7 @@ def profile_training(cfg: DictConfig) -> None:
     print(f"Trace saved to {trace}, open it at https://ui.perfetto.dev")
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="yolo_v0_coco_minitrain_25k")
+@hydra.main(version_base=None, config_path="../config", config_name="coco_minitrain_25k")
 def main(cfg: DictConfig) -> None:
     profile_training(cfg)
 
