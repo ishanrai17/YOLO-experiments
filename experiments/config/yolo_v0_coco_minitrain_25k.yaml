@@ -6,7 +6,7 @@ epochs: 135
 lr: 1e-4
 momentum: 0.9  # AdamW beta1
 weight_decay: 0.0005
-num_workers: 4
+num_workers: 2  # data loader worker processes, match the CPU count (nproc)
 
 ckpt_dir: checkpoints/yolov0/coco_minitrain_25k
 resume: false  # true = continue from the latest ckpt_dir/epoch_*.pt

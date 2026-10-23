@@ -50,7 +50,7 @@ class CocoMinitrain25k(Dataset):
         return target
 
 
-def get_dataloader(root: str, split: str = "train", batch_size: int = 16, num_workers: int = 4, **kwargs) -> DataLoader:
+def get_dataloader(root: str, split: str = "train", batch_size: int = 16, num_workers: int = 2, **kwargs) -> DataLoader:
     train = split == "train"
     return DataLoader(
         CocoMinitrain25k(root, split, **kwargs),

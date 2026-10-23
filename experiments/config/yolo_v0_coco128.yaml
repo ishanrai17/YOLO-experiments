@@ -4,7 +4,7 @@ device: cpu  # cuda | mps | cpu
 batch_size: 8
 epochs: 5
 lr: 1e-4
-num_workers: 4
+num_workers: 2  # data loader worker processes, match the CPU count (nproc)
 
 ckpt_dir: checkpoints/yolov0/coco128
 resume: false  # true = continue from the latest ckpt_dir/epoch_*.pt
