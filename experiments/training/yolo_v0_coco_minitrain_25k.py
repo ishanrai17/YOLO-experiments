@@ -54,6 +54,7 @@ def build_optimizer(cfg: DictConfig, model: torch.nn.Module) -> torch.optim.Opti
         lr=cfg.lr,
         betas=(cfg.get("momentum", 0.9), 0.999),
         weight_decay=cfg.get("weight_decay", 0.01),
+        fused=cfg.get("fused_adam", False)
     )
 
 
