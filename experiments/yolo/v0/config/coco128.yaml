@@ -8,4 +8,4 @@ num_workers: 2  # data loader worker processes, match the CPU count (nproc)
 fused_adam: false  # use fused AdamW if available, otherwise use torch.optim.AdamW
 
 ckpt_dir: checkpoints/yolov0/coco128
-resume: false  # true = continue from the latest ckpt_dir/epoch_*.pt
+resume: false  # true = continue from ckpt_dir/last_epoch.pt
