@@ -8,6 +8,7 @@ momentum: 0.9  # AdamW beta1
 weight_decay: 0.0005
 num_workers: 2  # data loader worker processes, match the CPU count (nproc)
 fused_adam: false  # use fused AdamW if available, otherwise use torch.optim.AdamW
+max_grad_norm: 1.0  # clip the global gradient norm to this before each optimizer step
 
 ckpt_dir: checkpoints/yolov0/coco_minitrain_25k
 resume: false  # true = continue from ckpt_dir/last_epoch.pt

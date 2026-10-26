@@ -75,6 +75,7 @@ def train(cfg: DictConfig) -> None:
 
             optimizer.zero_grad()
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=cfg.max_grad_norm)
             optimizer.step()
 
             total += loss.item()
