@@ -19,6 +19,8 @@ def profile_training(cfg: DictConfig) -> None:
     loader = get_dataloader(cfg.data_root, "train", cfg.batch_size, cfg.num_workers)
     model = YoloV1().to(device).train()
     optimizer = build_optimizer(cfg, model)
+    use_amp = cfg.amp and device.type == "cuda"
+    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
 
     activities = [ProfilerActivity.CPU] + ([ProfilerActivity.CUDA] if device.type == "cuda" else [])
     batches = iter(loader)
@@ -28,12 +30,17 @@ def profile_training(cfg: DictConfig) -> None:
                 images, targets = next(batches)
                 images, targets = images.to(device), targets.to(device)
             with record_function("2_forward"):
-                loss = yolo_loss(model(images), targets)
+                with torch.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                    pred = model(images)
+                loss = yolo_loss(pred.float(), targets)
             with record_function("3_backward"):
                 optimizer.zero_grad()
-                loss.backward()
+                scaler.scale(loss).backward()
             with record_function("4_optimizer"):
-                optimizer.step()
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=cfg.max_grad_norm)
+                scaler.step(optimizer)
+                scaler.update()
             if device.type == "cuda":
                 torch.cuda.synchronize()  # finish this step's GPU work, so 1_data only measures waiting on the loader
             prof.step()
