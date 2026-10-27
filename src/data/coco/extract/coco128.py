@@ -2,7 +2,7 @@ import hydra
 from omegaconf import DictConfig
 from pathlib import Path
 
-from src.data.coco.extract.utils import download_and_unzip
+from src.data.coco.extract.helpers.utils import download_and_unzip
 
 class Coco128:
     def __init__(self, cfg: DictConfig):
@@ -13,7 +13,6 @@ class Coco128:
             url=self.cfg.url,
             folder_path=Path(self.cfg.folder_path)
         )
-
 
 @hydra.main(version_base=None, config_path="config", config_name="coco128")
 def main(cfg: DictConfig) -> None:
